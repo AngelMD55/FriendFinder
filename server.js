@@ -8,8 +8,8 @@ app.use(express.json());
 app.use(express.static('./public'));
 
 app.use("/", require("./app/routing/htmlRoutes"));
-app.use("/survey", require("./app/routing/htmlRoutes"));
-app.use("/api.friends", require("./app/routing/apiRoutes"));
+// app.use("/survey", require("./app/routing/htmlRoutes"));
+app.use("/api/friends", require("./app/routing/apiRoutes"));
 
 
 
