@@ -149,13 +149,31 @@
                 </select>
             </div>
         </div>
-        <button type="button" class="btn btn-primary btn-lg btn-block" id="submit">Submit</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" id="submit" data-toggle="modal" data-target=".bd-example-modal-lg">Submit</button>
         <hr class="my-4">
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <h1>Best Match:</h1>
+            </div>
+            <hr>
+            <div>
+                <div id="bestMatch">
+
+                </div>
+
+
+            </div>
+        </div>
     </div>
 
     <div class="container">
         <div class="footer">
-            <p><a href="#">API Friends List</a> | <a href="#">GitHub Repo</a>
+            <p><a href="/api/friends">API Friends List</a> | <a href="https://github.com/AngelMD55/FriendFinder.git">GitHub
+                    Repo</a>
         </div>
     </div>
 
@@ -174,28 +192,59 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="../data//friends.js"></script>
 
     <script type="text/javascript">
+        let friends;
+        let friendsScore;
+        let friendsScoreArray = [];
+
+        let newScore = [];
+        let newFriendScore;
+        function get() {
+            $.get("/api/friends", function (data) {
+                friends = data;
+                for(let i = 0; i <friends.length; i++){
+                    friendsScoreArray.push(friends[i].score)
+                }
+                console.log(friendsScoreArray[0])               
+            });
+        };
+
+        get();
 
         $("#submit").on("click", function (event) {
             event.preventDefault();
-
             let newFriend = {
                 name: $("#nameInput").val().trim(),
                 photo: $("#linkInput").val().trim(),
                 score: [
-                    $("#question1").val().trim(),
-                    $("#question2").val().trim(),
-                    $("#question3").val().trim(),
-                    $("#question4").val().trim(),
-                    $("#question5").val().trim(),
-                    $("#question6").val().trim(),
-                    $("#question7").val().trim(),
-                    $("#question8").val().trim(),
-                    $("#question9").val().trim(),
-                    $("#question10").val().trim()
+                    parseInt($("#question1").val().trim()),
+                    parseInt($("#question2").val().trim()),
+                    parseInt($("#question3").val().trim()),
+                    parseInt($("#question4").val().trim()),
+                    parseInt($("#question5").val().trim()),
+                    parseInt($("#question6").val().trim()),
+                    parseInt($("#question7").val().trim()),
+                    parseInt($("#question8").val().trim()),
+                    parseInt($("#question9").val().trim()),
+                    parseInt($("#question10").val().trim())
                 ]
             };
+            newFriendScore = newFriend.score;
+            console.log(newFriendScore)
+
+            // for(let j = 0; j < friendsScoreArray.length; j++){
+            //     console.log(friendsScoreArray[j])
+            //     for(let k = 0; k <friendsScoreArray[j].length; k++){
+            //         newScore.push(parseInt(newFriendScore[k]) - parseInt(friendsScoreArray[j]))
+            //     }
+            // }
+            for(let i = 0; i < newFriendScore.length; i++){
+                newScore.push(Math.abs(parseInt(newFriendScore[i]))) - (Math.abs(parseInt((friendsScoreArray[i]))))
+            }
+
+            console.log(newScore)
 
             $("#nameInput").val("");
             $("#linkInput").val("");
@@ -210,14 +259,14 @@
             $("#question9").val("");
             $("#question10").val("");
 
-            console.log(newFriend);
 
             $.post("/api/friends", newFriend)
-                .then(function(data){
-                    console.log("---" + data)
+                .then(function (data) {
+                    // console.log("---" + data)
                 });
-
         });
+
+
 
 
     </script>

@@ -7,9 +7,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('./public'));
 
-app.use("/", require("./app/routing/htmlRoutes"));
+// app.use("/", require("./app/routing/htmlRoutes"));
+// app.use("/api/friends", require("./app/routing/apiRoutes"));
+
+require("./app/routing/htmlRoutes")(app);
 // app.use("/survey", require("./app/routing/htmlRoutes"));
-app.use("/api/friends", require("./app/routing/apiRoutes"));
+require("./app/routing/apiRoutes")(app);
+
 
 
 
