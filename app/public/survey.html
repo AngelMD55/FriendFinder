@@ -156,7 +156,7 @@
     <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+            <div class="modal-content" id="modal">
                 <h1>Best Match:</h1>
             </div>
             <hr>
@@ -181,6 +181,10 @@
         select {
             width: 237px;
         }
+
+        img{
+            width: 450px;
+        }
     </style>
 
 
@@ -204,14 +208,14 @@
         function get() {
             $.get("/api/friends", function (data) {
                 friends = data;
-                for(let i = 0; i <friends.length; i++){
+                for (let i = 0; i < friends.length; i++) {
                     friendsScoreArray.push(friends[i].score)
                 }
-                console.log(friendsScoreArray[0])               
+                // console.log(friendsScoreArray)
             });
         };
 
-        get();
+        get()
 
         $("#submit").on("click", function (event) {
             event.preventDefault();
@@ -232,20 +236,41 @@
                 ]
             };
             newFriendScore = newFriend.score;
-            console.log(newFriendScore)
+            // console.log(newFriendScore)
 
-            // for(let j = 0; j < friendsScoreArray.length; j++){
-            //     console.log(friendsScoreArray[j])
-            //     for(let k = 0; k <friendsScoreArray[j].length; k++){
-            //         newScore.push(parseInt(newFriendScore[k]) - parseInt(friendsScoreArray[j]))
-            //     }
-            // }
-            for(let i = 0; i < newFriendScore.length; i++){
-                newScore.push(Math.abs(parseInt(newFriendScore[i]))) - (Math.abs(parseInt((friendsScoreArray[i]))))
+            // console.log("friendsScoreArray", friendsScoreArray)
+            for (let j = 0; j < friendsScoreArray.length; j++) {
+                newScore[j] = [];
+                console.log(friendsScoreArray[j])
+                for (let k = 0; k < friendsScoreArray[j].length; k++) {
+                    newScore[j].push(Math.abs((parseInt(newFriendScore[j]) - parseInt(friendsScoreArray[j][k]))))
+                }
             }
+            // console.log("newScore", newScore)
+            let sumArray =[]
+            for (let l = 0; l < newScore.length; l++) {
+                sumArray.push(arrSum(newScore[l]))
+            }
+        
+            function arrSum(arr) {
+                    return arr.reduce(function (a, b) {
+                        return a + b
+                    }, 0);
+                }
 
-            console.log(newScore)
+            // console.log("sumArray", sumArray)
 
+            let lowest = friends[sumArray.indexOf(Math.min(...sumArray))];
+
+            // console.log(lowest.name);
+            
+            let name = (lowest.name);
+            $("#modal").append(name);
+            let photo = $("<img>").attr("src", lowest.photo);
+            $("#modal").append(photo)
+
+
+            get();
             $("#nameInput").val("");
             $("#linkInput").val("");
             $("#question1").val("");
